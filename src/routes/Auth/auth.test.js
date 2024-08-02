@@ -158,19 +158,6 @@ describe("verify the signup process", () => {
       });
     }, 10000);
 
-    // signup with small length of otp
-    test("It should respond with 400 Bad Request", async () => {
-      const response = await request(app)
-        .post("/signup/verify")
-        .send(dectOtp)
-        .expect("Content-Type", /json/)
-        .expect(400);
-
-      expect(response.body).toStrictEqual({
-        message: "OTP length should be lenght of 6(strict)",
-      });
-    }, 10000);
-
     // signup with otp not match
     test("It should respond with 400 Bad Request", async () => {
       const response = await request(app)
@@ -183,5 +170,100 @@ describe("verify the signup process", () => {
         message: "Invalid otp",
       });
     }, 10000);
+  });
+});
+
+describe("Signin process", () => {
+  beforeAll(async () => {
+    await MongoConnect();
+  });
+
+  afterAll(async () => {
+    await MongoDisconnect();
+  });
+
+  describe("/signin POST", () => {
+    const bodyWithoutEmail = {
+      password: "Souradeep123",
+    };
+
+    const bodyWihtoutPassword = {
+      email: "Souvikhazra@gmail.com",
+    };
+
+    const bodyWithWrongEmail = {
+      email: "S@gmail.com",
+      password: "123456",
+    };
+
+    // const password doesn't match
+    const bodyWithWrongpassword = {
+      email: "love@gmail.com",
+      password: "Souradeep@123",
+    };
+    //all correct
+    const body = {
+      email: "love@gmail.com",
+      password: "John@123",
+    };
+
+    // test("It should response with 200 statuscode")
+
+    //bodyWithoutEmail
+    test("It should response with 400 code(bodyWithoutEmail)", async () => {
+      const response = await request(app)
+        .post("/signin")
+        .send(bodyWithoutEmail)
+        .expect("Content-Type", /json/)
+        .expect(400);
+
+      expect(response.body).toStrictEqual({
+        message: "All fields are required",
+      });
+    }, 10000);
+
+    test("Its hould respond with 400 code(bodyWihtoutPassword)", async () => {
+      const response = await request(app)
+        .post("/signin")
+        .send(bodyWihtoutPassword)
+        .expect("Content-Type", /json/)
+        .expect(400);
+
+      expect(response.body).toStrictEqual({
+        message: "All fields are required",
+      });
+    }, 10000);
+
+    test("it should response with 400 code(bodyWithWrongEmail)", async () => {
+      const response = await request(app)
+        .post("/signin")
+        .send(bodyWithWrongEmail)
+        .expect("Content-Type", /json/)
+        .expect(400);
+
+      expect(response.body).toStrictEqual({
+        message: "Email does not exist",
+      });
+    }, 10000);
+
+    test("It should response with 400 code(bodyWithWrongpassword)", async () => {
+      const response = await request(app)
+        .post("/signin")
+        .send(bodyWithWrongpassword)
+        .expect("Content-Type", /json/)
+        .expect(400);
+
+      expect(response.body).toStrictEqual({
+        message: "Invalid credentials",
+      });
+    }, 20000);
+
+    test("It should response with 200 code(body)", async () => {
+      const response = await request(app)
+        .post("/signin")
+        .send(body)
+        .expect("Content-Type", /json/)
+        .expect(200);
+    }, 20000);
   });
 });

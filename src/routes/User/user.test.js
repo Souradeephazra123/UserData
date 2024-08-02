@@ -61,7 +61,7 @@ describe("Get specific user data", () => {
     //here i am using a id that does not exist
     test("It should respond with 404", async () => {
       const response = await request(app)
-        .get("/user/3")
+        .get("/user/300")
         .set("Authorization", `Bearer ${process.env.new_token}`)
         .expect("Content-Type", /json/)
         .expect(404);
@@ -153,7 +153,7 @@ describe("Update specific user data", () => {
     // here i am using a id that does not exist
     test("It should respond with 404", async () => {
       const response = await request(app)
-        .put("/user/3")
+        .put("/user/300")
         .send(fullbody)
         .set("Authorization", `Bearer ${process.env.new_token}`)
         .expect("Content-Type", /json/)
@@ -195,7 +195,7 @@ describe("Delete specific user data", () => {
     //here i am using a id that does not exist
     test("It should respond with 400", async () => {
       const response = await request(app)
-        .delete("/user/3")
+        .delete("/user/300")
         .set("Authorization", `Bearer ${process.env.new_token}`)
         .expect("Content-Type", /json/)
         .expect(400);
